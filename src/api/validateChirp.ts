@@ -23,7 +23,7 @@ export async function handlerValidateChirp(req: Request, res: Response): Promise
                 respondWithJSON(res, 200, { "valid": true });
             }
 
-        } catch (e) {
+        } catch (e) { // TODO: Potentially make more robust error handling
             e instanceof Error ? respondWithError(res, 400, e.message)
                 : respondWithError(res, 400, "Something went wrong");
         }
