@@ -9,7 +9,8 @@ import { handlerValidateChirp } from "./api/validateChirp.js";
 const app = express();
 const PORT = 8080;
 
-app.use(middlewareLogResponses);
+app.use(middlewareLogResponses); 
+app.use(express.json()); // express.json() lets us not have to parse JSON bodies ourselves (str buffer)
 app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 app.get("/api/healthz", handlerReadiness);
 app.get("/admin/metrics", handlerServerHitsCount, express.static("./admin/metrics"));
