@@ -6,28 +6,43 @@ import { handlerResetServerHitsCount } from "./api/resetServerHitsCount.js";
 import { middlewareMetricsInc } from "./api/middleware.js";
 import { handlerValidateChirp } from "./api/validateChirp.js";
 import { errorMiddleware } from "./api/errorMiddleware.js";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import postgres from "postgres";
+import { config } from "./config.js";
+import { drizzle } from "drizzle-orm/postgres-js";
+
+// Run migrations via drizzle ORM before starting the server
+const migrationClient = postgres(config.db.url, { max: 1 });
+await migrate(drizzle(migrationClient), config.db.migrationConfig);
 
 const app = express();
-const PORT = 8080;
 
 app.use(middlewareLogResponses);
 app.use(express.json()); // express.json() lets us not have to parse JSON bodies ourselves (str buffer)
+
 app.use("/app", middlewareMetricsInc, express.static("./src/app"));
-app.get("/admin/metrics", handlerServerHitsCount, express.static("./admin/metrics"));
-app.post("/admin/reset", handlerResetServerHitsCount);
-app.get("/api/healthz", handlerReadiness);
-app.post("/api/validate_chirp", async (req, res, next) => {
-    try {
-        await handlerValidateChirp(req, res);
-    } catch (e) {
-        next(e);
-    }
+
+app.get("/admin/metrics", async (req, res, next) => {
+    Promise.resolve(handlerServerHitsCount(req, res)).catch(next);
+}, express.static("./admin/metrics"));
+
+app.post("/admin/reset", async (req, res, next) => {
+    Promise.resolve(handlerResetServerHitsCount(req, res)).catch(next);
 });
+
+app.get("/api/healthz", async (req, res, next) => {
+    Promise.resolve(handlerReadiness(req, res)).catch(next);
+});
+
+app.post("/api/validate_chirp", async (req, res, next) => {
+    Promise.resolve(handlerValidateChirp(req, res)).catch(next);
+});
+
 app.use(errorMiddleware);
 
 
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(config.api.port, () => {
+    console.log(`Server is running at http://localhost:${config.api.port}`);
 });
 
