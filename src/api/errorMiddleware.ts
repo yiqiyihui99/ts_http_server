@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { respondWithError } from "./json.js";
-import { BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError } from "./types.js";
+import { BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError } from "./errors.js";
 
 export function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunction): void {
     if (err instanceof BadRequestError) {

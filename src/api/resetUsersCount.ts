@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { config } from "../config.js";
-import { ForbiddenError } from "./types.js";
+import { ForbiddenError } from "./errors.js";
 import { respondWithJSON } from "./json.js";
 import { deleteAllUsers } from "../db/queries/users.js";
 
