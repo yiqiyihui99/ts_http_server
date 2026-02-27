@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { respondWithJSON } from "./json.js";
-import { BannedWords, BadRequestError } from "./errors.js";
-import { createChirp, getChirps } from "../db/queries/chirps.js";
+import { BannedWords, BadRequestError, NotFoundError } from "./errors.js";
+import { createChirp, getChirps, getChirpById } from "../db/queries/chirps.js";
 
 type Chirp = {
     body: string;
@@ -30,8 +30,8 @@ function validateChirp(chirp: Chirp): Chirp {
 }
 
 export async function handlerCreateChirps(req: Request, res: Response): Promise<void> {
-    const {body, userId} = req.body ?? {};
-    const sanitizedChirp = validateChirp({body, userId});
+    const { body, userId } = req.body ?? {};
+    const sanitizedChirp = validateChirp({ body, userId });
     const chirp = await createChirp(sanitizedChirp);
     respondWithJSON(res, 201, chirp);
 }
@@ -39,4 +39,18 @@ export async function handlerCreateChirps(req: Request, res: Response): Promise<
 export async function handlerGetChirps(_: Request, res: Response): Promise<void> {
     const chirpsArray = await getChirps();
     respondWithJSON(res, 200, chirpsArray);
+}
+
+export async function handlerGetChirpById(req: Request, res: Response): Promise<void> {
+    const { chirpId } = req.params;
+
+    if (!chirpId || typeof chirpId !== "string") {
+        throw new BadRequestError("Chirp ID is missing or is not a string");
+    }
+
+    const chirp = await getChirpById(chirpId);
+    if (!chirp) {
+        throw new NotFoundError("Chirp not found");
+    }
+    respondWithJSON(res, 200, chirp);
 }
