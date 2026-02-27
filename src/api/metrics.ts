@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { config } from "../config.js";
 
-export async function handlerServerHitsCount(req: Request, res: Response): Promise<void> {
+export async function handlerServerHitsCount(_: Request, res: Response): Promise<void> {
     res.set("Content-Type", "text/html; charset=utf-8");
     res.send(`<html>
         <body>

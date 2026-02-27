@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { respondWithJSON } from "./json.js";
 import { BannedWords, BadRequestError } from "./errors.js";
-import { createChirp } from "../db/queries/chirps.js";
+import { createChirp, getChirps } from "../db/queries/chirps.js";
 
 type Chirp = {
     body: string;
@@ -34,4 +34,9 @@ export async function handlerCreateChirps(req: Request, res: Response): Promise<
     const sanitizedChirp = validateChirp({body, userId});
     const chirp = await createChirp(sanitizedChirp);
     respondWithJSON(res, 201, chirp);
+}
+
+export async function handlerGetChirps(_: Request, res: Response): Promise<void> {
+    const chirpsArray = await getChirps();
+    respondWithJSON(res, 200, chirpsArray);
 }
