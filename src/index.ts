@@ -4,7 +4,7 @@ import { middlewareLogResponses } from "./api/middleware.js";
 import { handlerServerHitsCount } from "./api/serverHitsCount.js";
 import { handlerResetUsersCount } from "./api/resetUsersCount.js";
 import { middlewareMetricsInc } from "./api/middleware.js";
-import { handlerCreateChirp } from "./api/createChirp.js";
+import { handlerCreateChirps } from "./api/createChirp.js";
 import { handlerGetChirps } from "./api/getChirps.js";
 import { errorMiddleware } from "./api/errorMiddleware.js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
@@ -37,7 +37,7 @@ app.get("/api/healthz", async (req, res, next) => {
 });
 
 app.post("/api/chirps", async (req, res, next) => {
-    Promise.resolve(handlerCreateChirp(req, res)).catch(next);
+    Promise.resolve(handlerCreateChirps(req, res)).catch(next);
 });
 
 app.get("/api/chirps", async (req, res, next) => {

@@ -29,7 +29,7 @@ function validateChirp(chirp: Chirp): Chirp {
     return { userId: chirp.userId, body: words.join(" ") };
 }
 
-export async function handlerCreateChirp(req: Request, res: Response): Promise<void> {
+export async function handlerCreateChirps(req: Request, res: Response): Promise<void> {
     const {body, userId} = req.body ?? {};
     const sanitizedChirp = validateChirp({body, userId});
     const chirp = await createChirp(sanitizedChirp);
