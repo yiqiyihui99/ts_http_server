@@ -15,6 +15,13 @@
       "when": 1772223827147,
       "tag": "0001_worthless_ted_forrester",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772937717593,
+      "tag": "0002_fat_timeslip",
+      "breakpoints": true
     }
   ]
 }
