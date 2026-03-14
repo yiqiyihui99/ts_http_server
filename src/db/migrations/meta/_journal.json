@@ -22,6 +22,27 @@
       "when": 1772937717593,
       "tag": "0002_fat_timeslip",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773518723158,
+      "tag": "0003_zippy_metal_master",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773519993294,
+      "tag": "0004_chunky_vampiro",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1773520079996,
+      "tag": "0005_cute_black_bolt",
+      "breakpoints": true
     }
   ]
 }

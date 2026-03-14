@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import type { JwtPayload } from "jsonwebtoken";
 import { BadRequestError, UnauthorizedError } from "./api/errors.js";
 import { Request } from "express";
@@ -7,14 +8,14 @@ import { Request } from "express";
 type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
 export async function hashPassword(password: string): Promise<string> {
-    return await argon2.hash(password);
+  return await argon2.hash(password);
 }
 
 export async function checkPasswordHash(
   password: string,
   hash: string,
 ): Promise<boolean> {
-    return await argon2.verify(hash, password);
+  return await argon2.verify(hash, password);
 }
 
 
@@ -40,9 +41,10 @@ export function validateJWT(tokenString: string, secret: string): string {
     return verified.sub;
   } catch (e) {
     throw new UnauthorizedError("Invalid token");
-  } 
+  }
 }
 
+// Used to obtain JWT and Refresh Tokens from Authorization header
 export function getBearerToken(req: Request): string {
   const authHeader = req.get("Authorization");
   const headerParts = authHeader?.split(" ");
@@ -51,4 +53,8 @@ export function getBearerToken(req: Request): string {
   }
   // has format: "Bearer <token>"
   return headerParts[1];
+}
+
+export function makeRefreshToken(): string {
+  return crypto.randomBytes(32).toString('hex');
 }

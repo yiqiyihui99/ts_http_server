@@ -36,7 +36,7 @@ export const config: Config = {
         fileserverHits: 0,
         port: Number(envOrThrow("PORT")),
         platform: envOrThrow("PLATFORM"), // we just set to prod, staging, etc. when not dev
-    }, 
+    },
     db: {
         url: envOrThrow("DB_URL"),
         migrationConfig: migrationConfig,

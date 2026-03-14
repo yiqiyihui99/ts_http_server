@@ -7,7 +7,7 @@ import { hashPassword } from "../auth.js";
 import { NewUser } from "../db/schema.js";
 
 // token is optional because it's not required for the user creation or login
-export type UserResponse = Omit<NewUser, "hashedPassword"> & { token?: string };;
+export type UserResponse = Omit<NewUser, "hashedPassword">;
 
 export async function handlerCreateUser(
   req: Request,
