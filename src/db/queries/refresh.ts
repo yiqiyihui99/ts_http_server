@@ -1,9 +1,8 @@
+import { config } from "src/config.js";
 import { db } from "../index.js";
 import { refreshTokens } from "../schema.js";
 import { and, eq, gt, isNull } from "drizzle-orm";
 
-// 60 days
-const expirationTime = 1000 * 60 * 60 * 24 * 60;
 
 export async function saveRefreshToken(userId: string, token: string) {
     const [result] = await db.insert(
@@ -11,7 +10,7 @@ export async function saveRefreshToken(userId: string, token: string) {
     ).values({
         token: token,
         userId: userId,
-        expiresAt: new Date(Date.now() + expirationTime),
+        expiresAt: new Date(Date.now() + config.refreshToken.expiresIn),
         revokedAt: null,
     }).returning();
     return result;

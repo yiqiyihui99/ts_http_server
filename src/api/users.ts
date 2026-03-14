@@ -63,7 +63,7 @@ export async function handlerUpdateUser(req: Request, res: Response): Promise<vo
   }
   try {
     const token = getBearerToken(req);
-    const userId = validateJWT(token, config.jwtSecret);
+    const userId = validateJWT(token, config.jwt.secret);
     
     const newHashedPassword = await hashPassword(req.body.password);
     const newUser = await updateUserPassword(userId, req.body.email, newHashedPassword);

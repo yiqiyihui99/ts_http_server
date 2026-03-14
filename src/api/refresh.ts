@@ -11,7 +11,7 @@ export async function handlerRefresh(req: Request, res: Response): Promise<void>
         respondWithError(res, 401, "Invalid refresh token");
         return;
     }
-    const newJWT = makeJWT(userId, 3600, config.jwtSecret);
+    const newJWT = makeJWT(userId, config.jwt.expiresIn, config.jwt.secret);
     respondWithJSON(res, 200, { token: newJWT });
 }
 

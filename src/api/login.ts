@@ -35,8 +35,7 @@ export async function handlerLogin(req: Request, res: Response): Promise<void> {
   }
 
 
-  const jwtExpirationTime = 3600;
-  const token = makeJWT(user.id, jwtExpirationTime, config.jwtSecret);
+  const token = makeJWT(user.id, config.jwt.expiresIn, config.jwt.secret);
 
 
   const refreshToken = makeRefreshToken();

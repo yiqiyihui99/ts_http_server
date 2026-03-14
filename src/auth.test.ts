@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { checkPasswordHash, hashPassword, makeJWT, validateJWT } from "../src/auth";
 import { UnauthorizedError } from "../src/api/errors";
+import { config } from "../src/config";
 
 describe("Password Hashing", () =>
 {
@@ -32,7 +33,7 @@ describe("JWT", () => {
     let token1: string;
 
     beforeAll(async () => {
-        token1 = makeJWT(userID1, 3600, secret1);
+        token1 = makeJWT(userID1, config.jwt.expiresIn, secret1);
     });
 
     it("should return the userID for the correct token", () => {

@@ -25,10 +25,20 @@ type APIConfig = {
     platform: string;
 }
 
+type JWTConfig = {
+    secret: string;
+    expiresIn: number;
+}
+
+type RefreshTokenConfig = {
+    expiresIn: number;
+}
+
 type Config = {
     api: APIConfig;
     db: DBConfig;
-    jwtSecret: string;
+    jwt: JWTConfig;
+    refreshToken: RefreshTokenConfig;
 };
 
 export const config: Config = {
@@ -41,5 +51,11 @@ export const config: Config = {
         url: envOrThrow("DB_URL"),
         migrationConfig: migrationConfig,
     },
-    jwtSecret: envOrThrow("JWT_SECRET"),
+    jwt: {
+        secret: envOrThrow("JWT_SECRET"),
+        expiresIn: 3600, // 1 hour
+    },
+    refreshToken: {
+        expiresIn: 1000 * 60 * 60 * 24 * 60, // 60 days
+    },
 };

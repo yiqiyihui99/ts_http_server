@@ -35,7 +35,7 @@ export async function handlerCreateChirps(req: Request, res: Response): Promise<
     const { body } = req.body ?? {};
 
     const token = getBearerToken(req);
-    const userId = validateJWT(token, config.jwtSecret);
+    const userId = validateJWT(token, config.jwt.secret);
 
     const sanitizedChirp = validateChirp({ body, userId });
     const chirp = await createChirp(sanitizedChirp);
@@ -64,7 +64,7 @@ export async function handlerGetChirpById(req: Request, res: Response): Promise<
 export async function handlerDeleteChirp(req: Request, res: Response): Promise<void> {
     try {
     const token = getBearerToken(req);
-    const userId = validateJWT(token, config.jwtSecret);
+    const userId = validateJWT(token, config.jwt.secret);
     const chirpId = req.params.chirpId;
     if (!chirpId || typeof chirpId !== "string") {
         throw new BadRequestError("Chirp ID is missing or is not a string");
