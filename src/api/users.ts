@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { BadRequestError, ForbiddenError } from "./errors.js";
-import { createUser, deleteAllUsers } from "../db/queries/users.js";
-import { respondWithJSON } from "./json.js";
+import { createUser, deleteAllUsers, updateUserPassword } from "../db/queries/users.js";
+import { respondWithError, respondWithJSON } from "./json.js";
 import { config } from "../config.js";
-import { hashPassword } from "../auth.js";
+import { hashPassword, getBearerToken, validateJWT } from "../auth.js";
 import { NewUser } from "../db/schema.js";
 
 // token is optional because it's not required for the user creation or login
@@ -51,4 +51,30 @@ export async function handlerResetUsersCount(
 
   await deleteAllUsers();
   respondWithJSON(res, 200, { message: "Users count reset" });
+}
+
+export async function handlerUpdateUser(req: Request, res: Response): Promise<void> {
+  if (!req.body.email || typeof req.body.email !== "string") {
+    throw new BadRequestError("Email is missing or is not a string");
+  }
+
+  if (!req.body.password || typeof req.body.password !== "string") {
+    throw new BadRequestError("Password is missing or is not a string");
+  }
+  try {
+    const token = getBearerToken(req);
+    const userId = validateJWT(token, config.jwtSecret);
+    
+    const newHashedPassword = await hashPassword(req.body.password);
+    const newUser = await updateUserPassword(userId, req.body.email, newHashedPassword);
+    const sanitizedUser: UserResponse = {
+      id: newUser.id,
+      email: newUser.email,
+      createdAt: newUser.createdAt ?? new Date(),
+      updatedAt: newUser.updatedAt ?? new Date(),
+  } satisfies UserResponse;
+  respondWithJSON(res, 200, sanitizedUser);
+  } catch (e) {
+    respondWithError(res, 401, "Invalid token");
+  }
 }

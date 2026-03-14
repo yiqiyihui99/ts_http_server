@@ -2,7 +2,7 @@ import express from "express";
 import { handlerReadiness } from "./api/readiness.js";
 import { middlewareLogResponses } from "./api/middleware.js";
 import { handlerServerHitsCount } from "./api/metrics.js";
-import { handlerResetUsersCount } from "./api/users.js";
+import { handlerResetUsersCount, handlerUpdateUser } from "./api/users.js";
 import { handlerLogin } from "./api/login.js";
 import { handlerRefresh, handlerRevoke } from "./api/refresh.js";
 import { middlewareMetricsInc, errorMiddleware } from "./api/middleware.js";
@@ -48,9 +48,14 @@ app.post("/api/users", async (req, res, next) => {
   Promise.resolve(handlerCreateUser(req, res)).catch(next);
 });
 
+app.put("/api/users", async (req, res, next) => {
+  Promise.resolve(handlerUpdateUser(req, res)).catch(next);
+});
+
 app.post("/api/login", async (req, res, next) => {
   Promise.resolve(handlerLogin(req, res)).catch(next);
 });
+
 
 app.post("/api/refresh", async (req, res, next) => {
   Promise.resolve(handlerRefresh(req, res)).catch(next);

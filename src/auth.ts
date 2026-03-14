@@ -44,7 +44,7 @@ export function validateJWT(tokenString: string, secret: string): string {
   }
 }
 
-// Used to obtain JWT and Refresh Tokens from Authorization header
+// Used to obtain JWT and Refresh Tokens from Authoriation
 export function getBearerToken(req: Request): string {
   const authHeader = req.get("Authorization");
   const headerParts = authHeader?.split(" ");
