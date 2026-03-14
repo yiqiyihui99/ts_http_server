@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { respondWithJSON } from "./json.js";
+import { respondWithError, respondWithJSON } from "./json.js";
 import { BannedWords, BadRequestError, NotFoundError, UnauthorizedError } from "./errors.js";
-import { createChirp, getChirps, getChirpById } from "../db/queries/chirps.js";
+import { createChirp, getChirps, getChirpById, deleteChirpById } from "../db/queries/chirps.js";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
 
@@ -59,4 +59,36 @@ export async function handlerGetChirpById(req: Request, res: Response): Promise<
         throw new NotFoundError("Chirp not found");
     }
     respondWithJSON(res, 200, chirp);
+}
+
+export async function handlerDeleteChirp(req: Request, res: Response): Promise<void> {
+    try {
+    const token = getBearerToken(req);
+    const userId = validateJWT(token, config.jwtSecret);
+    const chirpId = req.params.chirpId;
+    if (!chirpId || typeof chirpId !== "string") {
+        throw new BadRequestError("Chirp ID is missing or is not a string");
+    }
+    const chirp = await getChirpById(chirpId);
+    if (!chirp) {
+        respondWithError(res, 404, "Chirp not found");
+        return;
+    } else if (chirp.userId !== userId) {
+        respondWithError(res, 403, "You are not authorized to delete this chirp");
+        return;
+    }
+
+    await deleteChirpById(chirpId);
+    res.status(204).send();
+    } catch (e) {
+        if (e instanceof UnauthorizedError) {
+            respondWithError(res, 401, e.message);
+            return;
+        }
+        if (e instanceof BadRequestError) {
+            respondWithError(res, 400, e.message);
+            return;
+        }
+        respondWithError(res, 500, "Internal server error");
+    }
 }

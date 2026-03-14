@@ -10,6 +10,7 @@ import {
   handlerCreateChirps,
   handlerGetChirps,
   handlerGetChirpById,
+  handlerDeleteChirp,
 } from "./api/chirps.js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
@@ -65,9 +66,6 @@ app.post("/api/revoke", async (req, res, next) => {
   Promise.resolve(handlerRevoke(req, res)).catch(next);
 });
 
-app.post("/api/chirps", async (req, res, next) => {
-  Promise.resolve(handlerCreateChirps(req, res)).catch(next);
-});
 
 app.get("/api/chirps", async (req, res, next) => {
   Promise.resolve(handlerGetChirps(req, res)).catch(next);
@@ -75,7 +73,16 @@ app.get("/api/chirps", async (req, res, next) => {
 
 app.get("/api/chirps/:chirpId", async (req, res, next) => {
   Promise.resolve(handlerGetChirpById(req, res)).catch(next);
+})
+
+app.post("/api/chirps", async (req, res, next) => {
+  Promise.resolve(handlerCreateChirps(req, res)).catch(next);
 });
+
+app.delete("/api/chirps/:chirpId", async (req, res, next) => {
+  Promise.resolve(handlerDeleteChirp(req, res)).catch(next);
+})
+
 
 app.use(errorMiddleware);
 
