@@ -1,7 +1,9 @@
 import type { Request, Response } from "express";
 import { respondWithJSON } from "./json.js";
-import { BannedWords, BadRequestError, NotFoundError } from "./errors.js";
+import { BannedWords, BadRequestError, NotFoundError, UnauthorizedError } from "./errors.js";
 import { createChirp, getChirps, getChirpById } from "../db/queries/chirps.js";
+import { getBearerToken, validateJWT } from "../auth.js";
+import { config } from "../config.js";
 
 type Chirp = {
     body: string;
@@ -30,7 +32,11 @@ function validateChirp(chirp: Chirp): Chirp {
 }
 
 export async function handlerCreateChirps(req: Request, res: Response): Promise<void> {
-    const { body, userId } = req.body ?? {};
+    const { body } = req.body ?? {};
+
+    const token = getBearerToken(req);
+    const userId = validateJWT(token, config.jwtSecret);
+
     const sanitizedChirp = validateChirp({ body, userId });
     const chirp = await createChirp(sanitizedChirp);
     respondWithJSON(res, 201, chirp);

@@ -28,6 +28,7 @@ type APIConfig = {
 type Config = {
     api: APIConfig;
     db: DBConfig;
+    jwtSecret: string;
 };
 
 export const config: Config = {
@@ -40,4 +41,5 @@ export const config: Config = {
         url: envOrThrow("DB_URL"),
         migrationConfig: migrationConfig,
     },
+    jwtSecret: envOrThrow("JWT_SECRET"),
 };

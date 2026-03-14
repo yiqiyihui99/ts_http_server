@@ -20,6 +20,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.3.0",
     "drizzle-kit": "^0.31.9",
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"
   },
