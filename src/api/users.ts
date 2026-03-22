@@ -3,7 +3,7 @@ import { BadRequestError, ForbiddenError } from "./errors.js";
 import { createUser, deleteAllUsers, updateUserPassword, updateUserIsChirpyRed } from "../db/queries/users.js";
 import { respondWithError, respondWithJSON } from "./json.js";
 import { config } from "../config.js";
-import { hashPassword, getBearerToken, validateJWT } from "../auth.js";
+import { hashPassword, getBearerToken, validateJWT, getAPIKey } from "../auth.js";
 import { NewUser } from "../db/schema.js";
 
 // jwt token is optional because it's not required for the user creation or login
@@ -82,6 +82,16 @@ export async function handlerUpdateUser(req: Request, res: Response): Promise<vo
 }
 
 export async function handlerUpdateUserMembership(req: Request, res: Response): Promise<void> {
+  try {
+    const apiKey = getAPIKey(req);
+    if (apiKey !== config.api.polkaKey) {
+      respondWithError(res, 401, "Invalid API key");
+      return;
+  }
+  } catch (e) {
+    respondWithError(res, 401, "Invalid API key");
+    return;
+  }
     const event = req.body.event;
     if (!event || event !== "user.upgraded") {
       res.status(204).send();
